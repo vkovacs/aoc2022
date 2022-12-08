@@ -93,6 +93,68 @@ int part1(List<List<Integer>> forest) {
 
 def solution1 = part1(forest)
 println solution1
-assert solution1 == 1796
+//assert solution1 == 1796
 
 
+int part2(List<List<Integer>> forest) {
+    int maxScenicScore = 0
+    for (int i in 0..<forest.size()) {
+        for (j in 0..<forest.size()) {
+            int scenicScore = scenicScore(forest, i, j)
+            if (scenicScore > maxScenicScore) {
+                maxScenicScore = scenicScore
+            }
+        }
+    }
+    maxScenicScore
+}
+
+def solution2 = part2(forest)
+println solution2
+
+int scenicScore(List<List<Integer>> forest, int treeX, int treeY) {
+    int scenicScore = scenicScoreHorizontal(forest, treeX, treeY, 1) *
+            scenicScoreHorizontal(forest, treeX, treeY, -1) *
+            scenicScoreVertical(forest, treeX, treeY, -1) *
+            scenicScoreVertical(forest, treeX, treeY, 1)
+
+    scenicScore
+}
+
+int scenicScoreHorizontal(List<List<Integer>> forest, int treeX, int treeY, int direction) {
+    int tree = forest[treeX][treeY] as int
+    int scenicScore = 0
+    int furthestIndex = (direction > 0 ? forest[0].size() - 1 : 0)
+
+    def start = treeY + direction
+    if (direction > 0 && start > furthestIndex || direction < 0 && start < furthestIndex) return 0
+
+    for (i in start..furthestIndex) {
+        if (forest[treeX][i] as int < tree) {
+            scenicScore++
+        } else if (forest[treeX][i] as int >= tree) {
+            return ++scenicScore
+        }
+    }
+
+    scenicScore
+}
+
+int scenicScoreVertical(List<List<Integer>> forest, int treeX, int treeY, int direction) {
+    int tree = forest[treeX][treeY] as int
+    int scenicScore = 0
+    int furthestIndex = (direction > 0 ? forest[0].size() - 1 : 0)
+
+    def start = treeX + direction
+    if (direction > 0 && start > furthestIndex || direction < 0 && start < furthestIndex) return 0
+
+    for (i in start..furthestIndex) {
+        if (forest[i][treeY] as int < tree) {
+            scenicScore++
+        } else if (forest[i][treeY] as int >= tree) {
+            return ++scenicScore
+        }
+    }
+
+    scenicScore
+}
