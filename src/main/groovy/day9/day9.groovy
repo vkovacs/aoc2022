@@ -10,7 +10,6 @@ def commands = lines.collect { line ->
 }
 
 def solution1(List<Tuple2<String, Integer>> commands) {
-
     def visited = [] as Set
     def head = new Position(0, 0)
     def tail = new Position(0, 0)
@@ -73,4 +72,33 @@ Position moveTail(Position head, Position tail) {
     }
 }
 
-println solution1(commands)
+def solution1 = solution1(commands)
+println solution1
+assert solution1 == 6339
+
+int solution2 = solution2(commands)
+println solution2
+assert solution2 == 2541
+
+int solution2(List<Tuple2<String, Integer>> commands) {
+    def visited = [] as Set
+    List<Position> heads = []
+    10.times {
+        heads << new Position(0, 0)
+    }
+
+    commands.forEach { command ->
+        def (direction, step) = command
+        step.times {
+            heads[0] = moveHead(direction, heads[0])
+            for (i in (1..9)) {
+                heads[i] = moveTail(heads[i-1], heads[i])
+
+                if (i == 9) {
+                    visited << heads[9]
+                }
+            }
+        }
+    }
+    visited.size()
+}
